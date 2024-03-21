@@ -1,0 +1,87 @@
+[gd_scene load_steps=13 format=3 uid="uid://nq8o3pl3p51d"]
+
+[ext_resource type="PackedScene" uid="uid://gyqb4x576n26" path="res://Player.tscn" id="2_5j4gg"]
+[ext_resource type="PackedScene" uid="uid://c6h7x5qhmxk0f" path="res://barrel_a.tscn" id="2_xkqd0"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hddt4"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_a0bnm"]
+sky_material = SubResource("ProceduralSkyMaterial_hddt4")
+
+[sub_resource type="Environment" id="Environment_0rg63"]
+background_mode = 2
+sky = SubResource("Sky_a0bnm")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_cd4cp"]
+size = Vector2(20, 20)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vc4v4"]
+data = PackedVector3Array(10, 0, 10, -10, 0, 10, 10, 0, -10, -10, 0, 10, -10, 0, -10, 10, 0, -10)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_2qwym"]
+plane = Plane(-1, 0, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ejj1d"]
+plane = Plane(1, 0, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_pn0qi"]
+plane = Plane(0, -1, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_w2llq"]
+plane = Plane(0, 0, -1, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_dd7hk"]
+plane = Plane(0, 0, 1, 0)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0rg63")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.355686, -0.508117, 0.784414, 0.158188, 0.85992, 0.485298, -0.921121, -0.0485291, 0.386239, 2.52338, 3.93614, 5.17974)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_cd4cp")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_vc4v4")
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("2_5j4gg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5)
+
+[node name="Barrel_A" parent="." instance=ExtResource("2_xkqd0")]
+
+[node name="Barrel_A2" parent="." instance=ExtResource("2_xkqd0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.5, 0)
+
+[node name="Barrel_A3" parent="." instance=ExtResource("2_xkqd0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.5, 0)
+
+[node name="RigidBody3D" type="StaticBody3D" parent="."]
+
+[node name="RightBound" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_2qwym")
+
+[node name="LeftBound" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_ejj1d")
+
+[node name="CeillingBound" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+shape = SubResource("WorldBoundaryShape3D_pn0qi")
+
+[node name="BottomBound" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+shape = SubResource("WorldBoundaryShape3D_w2llq")
+
+[node name="TopBound" type="CollisionShape3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+shape = SubResource("WorldBoundaryShape3D_dd7hk")
